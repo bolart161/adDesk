@@ -63,7 +63,7 @@
         class="text-center pt-5"
         v-else
       >
-        <h1>You have not orders</h1>
+        <h1>You have no orders</h1>
       </v-col>
     </v-row>
   </v-container>

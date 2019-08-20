@@ -18,7 +18,7 @@
         <v-row>
           <v-col xs12>
             <v-card-title>
-              <h3>Do ypu want buy it?</h3>
+              <h3>Do you want buy it?</h3>
             </v-card-title>
           </v-col>
         </v-row>
@@ -31,7 +31,6 @@
               <v-form
                 v-model="valid"
                 ref="form"
-                lazy-validation
               >
                 <v-text-field
                   outlined
@@ -101,6 +100,7 @@
         name: '',
         phoneRules: [
           v => !!v || 'This is required area',
+          v => v.length === 18 || 'Enter right phone'
         ],
         mask: '+7-(###)-###-##-##'
       }

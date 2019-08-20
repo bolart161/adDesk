@@ -48,12 +48,11 @@
             </v-img>
             <v-card-title>{{ad.title}}</v-card-title>
             <v-card-text>
-              <p style="height: 80px">
+              <p style="height: 100px">
                 {{(ad.description.length > 100)? ad.description.substring(0,97) + '...' : ad.description}}
               </p>
             </v-card-text>
-            <v-card-actions>
-              <v-spacer/>
+            <v-card-actions style="position:absolute; bottom: 10px; right: 10px">
               <v-btn
                 outlined
                 color="primary"

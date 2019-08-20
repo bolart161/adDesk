@@ -16,11 +16,11 @@
         :key="ad.id"
         class="col-md-10"
       >
-        <v-card height="240px">
+        <v-card height="100%">
           <v-row>
             <v-col class="pb-0 pt-0" cols="4">
               <v-img
-                height="240px"
+                class="fill-height"
                 :src="ad.imageSrc"
               ></v-img>
             </v-col>
@@ -29,9 +29,8 @@
                 {{ad.title}}
               </v-card-title>
               <v-card-text>
-                <p style="height: 80px">
                   {{(ad.description.length > 250)? ad.description.substring(0,247) + '...' : ad.description}}
-                </p>
+
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -79,6 +78,7 @@
 
 <script>
 export default {
+  name: 'Ad List',
   data () {
     return {}
   },

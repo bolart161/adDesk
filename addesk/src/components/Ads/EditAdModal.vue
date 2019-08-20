@@ -33,7 +33,6 @@
                 ref="form"
               >
                 <v-text-field
-
                   outlined
                   label="Title"
                   name="title"
