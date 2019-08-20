@@ -4,7 +4,11 @@
       align='baseline'
       justify='space-around'
     >
-      <v-col cols="10">
+      <v-col
+        xs="12"
+        sm="10"
+        md="8"
+      >
         <v-card v-if="!loading">
           <v-img
             aspect-ratio

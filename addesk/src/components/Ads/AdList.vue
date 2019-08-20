@@ -28,16 +28,15 @@
               <v-card-title>
                 {{ad.title}}
               </v-card-title>
-              <v-card-text>
-                  {{(ad.description.length > 250)? ad.description.substring(0,247) + '...' : ad.description}}
+              <v-card-text style="height: 220px;">
+                  {{(ad.description.length > 133)? ad.description.substring(0,130) + '...' : ad.description}}
 
               </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
+              <v-card-actions style="position:absolute; bottom: 10px; right: 10px">
                 <v-btn
                   color="info"
                   :to="`/ad/${ad.id}`"
-                  x-large
+                  large
                   rounded
                 >Open</v-btn>
               </v-card-actions>

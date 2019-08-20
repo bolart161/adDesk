@@ -33,7 +33,7 @@
               :key="order.id"
               two-line
             >
-              <v-list-item-action>
+              <v-list-item-action class="mr-4 mr-sm-7">
                 <v-checkbox
                   color="success"
                   :input-value="order.done"
@@ -43,12 +43,20 @@
 
               <v-list-item-content>
                 <v-list-item-title>{{order.name}}</v-list-item-title>
-                <v-list-item-subtitle>{{order.phone}}</v-list-item-subtitle>
+                <v-list-item-subtitle class="pt-1">
+                  <a
+                    style="text-decoration: none;"
+                    :href="`tel:${order.phone}`"
+                  >
+                    {{order.phone}}
+                  </a>
+                </v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
                 <v-btn
                  :to="'/ad/' + order.adId"
                  class="primary"
+                 small
                 >
                   Open
                 </v-btn>
@@ -72,7 +80,8 @@
 <script>
 export default {
   data () {
-    return {}
+    return {
+    }
   },
   computed: {
     loading () {
