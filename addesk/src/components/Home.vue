@@ -1,42 +1,34 @@
 <template>
-  <div>
-    <v-container fluid>
-      <v-row
-        align='baseline'
-        justify='space-around'
+  <div v-if="!loading">
+    <v-container
+      fluid
+    >
+      <v-carousel
+        cycle
+        interval="5000"
+        height="600"
       >
-        <v-col>
-          <v-carousel
-            cycle
-            dark
-            interval="5000"
+        <v-carousel-item
+          v-for="ad in promoAds"
+          :key="ad.id"
+          :src="ad.imageSrc"
+        >
+          <div
+            class="show-ad-btn"
           >
-            <v-carousel-item
-              v-for="ad in promoAds"
-              :key="ad.id"
-              :src="ad.src"
+            <v-btn
+              :to="`/ad/${ad.id}`"
+              class="error"
             >
-              <div
-                class="show-ad-btn"
-              >
-                <v-btn
-                  :to="`/ad/${ad.id}`"
-                  class="error"
-                >
-                  {{ad.title}}
-                </v-btn>
-              </div>
-            </v-carousel-item>
-          </v-carousel>
-        </v-col>
-      </v-row>
+              {{ad.title}}
+            </v-btn>
+          </div>
+        </v-carousel-item>
+      </v-carousel>
     </v-container>
     <v-container>
       <h1>All ads</h1>
-      <v-row
-        align='baseline'
-        justify='center'
-      >
+      <v-row>
         <v-col
           xs="12"
           sm="6"
@@ -46,17 +38,19 @@
           v-for="ad in ads"
           :key="ad.id"
         >
-          <v-card>
+          <v-card
+            height="100%"
+          >
             <v-img
-              class="white--text"
               height="200px"
-              aspect-ratio
-              :src="ad.src"
+              :src="ad.imageSrc"
             >
-              <v-card-title class="align-end fill-height">{{ad.title}}</v-card-title>
             </v-img>
+            <v-card-title>{{ad.title}}</v-card-title>
             <v-card-text>
-              {{ad.description}}
+              <p style="height: 80px">
+                {{(ad.description.length > 100)? ad.description.substring(0,97) + '...' : ad.description}}
+              </p>
             </v-card-text>
             <v-card-actions>
               <v-spacer/>
@@ -65,10 +59,32 @@
                 color="primary"
                 :to="`/ad/${ad.id}`"
               >
-                Open</v-btn>
-              <v-btn color="success">Buy</v-btn>
+                Open
+              </v-btn>
+              <add-buy-modal :ad="ad"/>
             </v-card-actions>
           </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+  <div v-else>
+    <v-container>
+      <v-row
+        align='center'
+        justify='space-around'
+      >
+        <v-col
+          col="12"
+          class="text-center pt-5"
+        >
+          <v-progress-circular
+            indeterminate
+            :size="100"
+            :width="4"
+            color="white"
+          >
+          </v-progress-circular>
         </v-col>
       </v-row>
     </v-container>
@@ -83,6 +99,9 @@ export default {
     },
     ads () {
       return this.$store.getters.ads
+    },
+    loading () {
+      return this.$store.getters.loading
     }
   }
 }

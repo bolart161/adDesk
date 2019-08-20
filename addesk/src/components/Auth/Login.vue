@@ -95,6 +95,11 @@ export default {
           .catch(() => {})
       }
     }
+  },
+  created() {
+    if (this.$route.query['loginError']) {
+      this.$store.dispatch('setError', 'For this page need be logged')
+    }
   }
 }
 </script>

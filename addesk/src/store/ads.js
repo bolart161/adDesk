@@ -1,80 +1,118 @@
+import * as fb from 'firebase/app'
+import 'firebase/database'
+import 'firebase/storage'
+
+class Ad {
+  constructor (title, description, ownerId, imageSrc = '', promo = false, id = null) {
+    this.title = title;
+    this.description = description;
+    this.ownerId = ownerId;
+    this.imageSrc = imageSrc;
+    this.promo = promo;
+    this.id = id;
+  }
+}
+
 export default {
   state: {
-    ads: [
-      {
-        id: '1',
-        title: 'First ad',
-        description: 'description for first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-        promo: true
-      },
-      {
-        id: '2',
-        title: 'Second ad',
-        description: 'description for Second adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-        promo: true
-      },
-      {
-        id: '3',
-        title: 'Third ad',
-        description: 'description for Third adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-        promo: true
-      },
-      {
-        id: '4',
-        title: '4th ad',
-        description: 'description for 4th adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-        promo: true
-      },
-      {
-        id: '5',
-        title: '5th ad',
-        description: 'description for 5th adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-        promo: true
-      },
-      {
-        id: '6',
-        title: 'First ad',
-        description: 'description for first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-        promo: false
-      },
-      {
-        id: '7',
-        title: 'Second ad',
-        description: 'description for Second adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-        promo: false
-      },
-      {
-        id: '8',
-        title: 'Third ad',
-        description: 'description for Third adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-        promo: false
-      },
-      {
-        id: '9',
-        title: '4th ad',
-        description: 'description for 4th adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-        promo: false
-      },
-      {
-        id: '10',
-        title: '5th ad',
-        description: 'description for 5th adst ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad loremfor first ad lorem',
-        src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-        promo: false
-      }
-    ]
+    ads: []
   },
-  mutation: {},
-  actions: {},
+  mutations: {
+    createAd (state, payload) {
+      state.ads.push(payload)
+    },
+    loadAds (state, payload) {
+      state.ads = payload
+    },
+    updateAd (state, {title, description, promo, id}) {
+      const ad = state.ads.find(ad => {
+        return ad.id === id
+      });
+
+      ad.title = title;
+      ad.description = description;
+      ad.promo = promo;
+    }
+  },
+  actions: {
+    async createAd ({commit, getters}, payload) {
+      commit('clearError');
+      commit('setLoading', true);
+
+      const image = payload.image;
+
+      try {
+        const newAd = new Ad(
+          payload.title,
+          payload.description,
+          getters.user.id,
+          '',
+          payload.promo
+        );
+
+        const ad = await fb.database().ref('ads').push(newAd);
+        const imageExt = image.name.slice(image.name.lastIndexOf('.'));
+
+        const fileData = await fb.storage().ref(`ads/${ad.key}${imageExt}`).put(image);
+        const imageSrc = await fileData.ref.getDownloadURL();
+
+        await fb.database().ref('ads').child(ad.key).update({
+          imageSrc
+        });
+
+        commit('setLoading', false)
+        commit('createAd', {
+          ...newAd,
+          id: ad.key,
+          imageSrc
+        })
+      } catch (error) {
+        commit('setError', error.message)
+        commit('setLoading', false)
+        throw error
+      }
+    },
+    async fetchAds ({commit}) {
+      commit('clearError')
+      commit('setLoading', true)
+
+      try {
+        const fbVal = await fb.database().ref('ads').once('value')
+        const ads = fbVal.val() || []
+        const result = []
+        Object.keys(ads).forEach(key => {
+          const ad = ads[key]
+          result.push(
+            new Ad(ad.title, ad.description, ad.ownerId, ad.imageSrc, ad.promo, key)
+          )
+        })
+        commit('loadAds', result)
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setError', error.message)
+        commit('setLoading', false)
+        throw error
+      }
+    },
+    async updateAd ({commit}, {title, description, promo, id}) {
+      commit('clearError')
+      commit('setLoading', true)
+
+      try {
+        await fb.database().ref('ads').child(id).update({
+          title, description, promo
+        })
+        commit('updateAd', {
+          title, description, promo, id
+        })
+        commit('setLoading', false)
+      } catch (error) {
+        commit('setError', error.message)
+        commit('setLoading', false)
+        throw error
+      }
+    }
+  },
   getters: {
     ads (state) {
       return state.ads

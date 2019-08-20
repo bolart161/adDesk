@@ -5,10 +5,10 @@
       justify='space-around'
     >
       <v-col
-        sm='8'
-        md='6'
-        lg='5'
-        xl='4'
+        sm='10'
+        md='9'
+        lg='7'
+        xl='6'
       >
         <v-card class="elevation-12">
           <v-toolbar
@@ -21,10 +21,15 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-form class="mb-4">
+            <v-form
+              class="mb-4"
+              v-model="valid"
+              ref="form"
+            >
               <v-text-field
                 label="Ad title"
                 name="title"
+                :rules="[v => !!v || 'This is required value']"
                 v-model="title"
                 type="text"
               ></v-text-field>
@@ -59,7 +64,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary">Create ad</v-btn>
+            <v-btn
+              color="primary"
+              @click="onSubmit"
+              :loading="loading"
+              :disabled="!valid || !image || loading"
+            >Create ad</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -71,11 +81,17 @@
 export default {
   data () {
     return {
+      valid: false,
       imageSrc: '',
       image: null,
       isPromo: false,
       description: '',
       title: ''
+    }
+  },
+  computed: {
+    loading () {
+      return this.$store.getters.loading
     }
   },
   methods: {
@@ -86,11 +102,27 @@ export default {
       const file = event.target.files[0]
       const reader = new FileReader()
 
-      reader.onload = e => {
+      reader.onload = () => {
         this.imageSrc = reader.result
       }
       reader.readAsDataURL(file)
       this.image = file
+    },
+    onSubmit () {
+      if (this.$refs.form.validate()) {
+        const ad = {
+          title: this.title,
+          description: this.description,
+          promo: this.isPromo,
+          image: this.image
+        }
+
+        this.$store.dispatch('createAd', ad)
+          .then(() => {
+            this.$router.push('list')
+          })
+          .catch(() => {})
+      }
     }
   }
 }
