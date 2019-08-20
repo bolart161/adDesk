@@ -60,55 +60,55 @@ export default {
           imageSrc
         });
 
-        commit('setLoading', false)
+        commit('setLoading', false);
         commit('createAd', {
           ...newAd,
           id: ad.key,
           imageSrc
         })
       } catch (error) {
-        commit('setError', error.message)
-        commit('setLoading', false)
+        commit('setError', error.message);
+        commit('setLoading', false);
         throw error
       }
     },
     async fetchAds ({commit}) {
-      commit('clearError')
-      commit('setLoading', true)
+      commit('clearError');
+      commit('setLoading', true);
 
       try {
-        const fbVal = await fb.database().ref('ads').once('value')
-        const ads = fbVal.val() || []
-        const result = []
+        const fbVal = await fb.database().ref('ads').once('value');
+        const ads = fbVal.val() || [];
+        const result = [];
         Object.keys(ads).forEach(key => {
-          const ad = ads[key]
+          const ad = ads[key];
           result.push(
             new Ad(ad.title, ad.description, ad.ownerId, ad.imageSrc, ad.promo, key)
           )
-        })
-        commit('loadAds', result)
+        });
+        commit('loadAds', result);
         commit('setLoading', false)
       } catch (error) {
-        commit('setError', error.message)
-        commit('setLoading', false)
+        commit('setError', error.message);
+        commit('setLoading', false);
         throw error
       }
     },
     async updateAd ({commit}, {title, description, promo, id}) {
-      commit('clearError')
-      commit('setLoading', true)
+      commit('clearError');
+      commit('setLoading', true);
 
       try {
         await fb.database().ref('ads').child(id).update({
           title, description, promo
-        })
+        });
         commit('updateAd', {
           title, description, promo, id
-        })
+        });
         commit('setLoading', false)
       } catch (error) {
-        commit('setError', error.message)
-        commit('setLoading', false)
+        commit('setError', error.message);
+        commit('setLoading', false);
         throw error
       }
     }
