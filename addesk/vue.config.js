@@ -9,5 +9,8 @@ module.exports = {
         maxSize: 250000,
       }
     }
+  },
+  devServer: {
+    port: 21570,
   }
 };
