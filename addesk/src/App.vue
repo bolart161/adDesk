@@ -40,7 +40,6 @@
 
     <v-app-bar
       app
-
       clipped-left
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="d-flex d-md-none"></v-app-bar-nav-icon>
@@ -142,7 +141,7 @@ export default {
     }
   },
   created () {
-    this.$vuetify.theme.dark = true
+    this.$vuetify.theme.dark = false
   },
 }
 </script>

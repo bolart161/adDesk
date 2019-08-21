@@ -10,7 +10,10 @@
         lg='7'
         xl='6'
       >
-        <v-card class="elevation-12">
+        <v-card
+          class="elevation-12"
+          :loading="loading"
+        >
           <v-toolbar
             color="primary"
             dark

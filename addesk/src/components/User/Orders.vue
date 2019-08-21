@@ -13,7 +13,7 @@
           indeterminate
           :size="100"
           :width="4"
-          color="white"
+          color="blue"
         >
         </v-progress-circular>
       </v-col>
