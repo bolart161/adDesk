@@ -102,13 +102,13 @@ export default {
       this.$refs.fileInput.click()
     },
     onFileChange (event) {
-      const file = event.target.files[0]
-      const reader = new FileReader()
+      const file = event.target.files[0];
+      const reader = new FileReader();
 
       reader.onload = () => {
         this.imageSrc = reader.result
-      }
-      reader.readAsDataURL(file)
+      };
+      reader.readAsDataURL(file);
       this.image = file
     },
     onSubmit () {
@@ -118,7 +118,7 @@ export default {
           description: this.description,
           promo: this.isPromo,
           image: this.image
-        }
+        };
 
         this.$store.dispatch('createAd', ad)
           .then(() => {

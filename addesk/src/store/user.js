@@ -23,7 +23,9 @@ export default {
 
       try {
         const user = await fb.auth().createUserWithEmailAndPassword(email, password);
+
         localStorage.setItem('addesk-auth-id', user.user.uid);
+
         commit('setUser', new User(user.user.uid));
         commit('setLoading', false)
       } catch (error) {
@@ -38,7 +40,9 @@ export default {
 
       try {
         const user = await fb.auth().signInWithEmailAndPassword(email, password);
+
         localStorage.setItem('addesk-auth-id', user.user.uid);
+
         commit('setUser', new User(user.user.uid));
         commit('setLoading', false)
       } catch (error) {

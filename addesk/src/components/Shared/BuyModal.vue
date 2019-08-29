@@ -118,7 +118,7 @@
           phone: this.phone,
           name: this.name,
           adId: this.ad.id,
-        ownerId: this.ad.ownerId
+          ownerId: this.ad.ownerId
         })
           .finally(() => {
             this.name = '';
